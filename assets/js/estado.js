@@ -12,9 +12,20 @@ function getParam(name) {
   return url.searchParams.get(name);
 }
 
+/* ==========================
+   FUNCION: formatear fecha DD/MM/YYYY
+========================== */
+function formatoFecha(fechaISO) {
+  const fecha = new Date(fechaISO);
+  const dia = String(fecha.getDate()).padStart(2, "0");
+  const mes = String(fecha.getMonth() + 1).padStart(2, "0"); // enero = 0
+  const anio = fecha.getFullYear();
+  return `${dia}/${mes}/${anio}`;
+}
+
 $(document).ready(function () {
 
-  const idURL = getParam("id");
+  let idURL = getParam("id");
   const modo  = getParam("modo");
 
   /* ==========================
@@ -22,6 +33,14 @@ $(document).ready(function () {
   ========================== */
   if (modo === "deudor" && idURL) {
     esModoDeudor = true;
+
+    // Decodificar ID Base64
+    try {
+      idURL = atob(idURL);
+    } catch(e) {
+      Swal.fire("Error", "Enlace de deudor inválido", "error");
+      return;
+    }
 
     $("#menuAdmin").hide();
     $("#bloqueSelect").hide();
@@ -39,11 +58,14 @@ $(document).ready(function () {
     pageLength: 5,
     columnDefs: [
       {
-        targets: 2,              // columna acciones
-        visible: !esModoDeudor,  // ocultar en modo deudor
+        targets: 2,
+        visible: !esModoDeudor,
         orderable: false
       }
-    ]
+    ],
+    scrollY: esModoDeudor ? "300px" : false,
+    scrollCollapse: esModoDeudor,
+    paging: !esModoDeudor
   });
 
   /* ==========================
@@ -55,9 +77,9 @@ $(document).ready(function () {
   });
 
   /* ==========================
-     SI ES DEUDOR → CARGA DIRECTA
+     CARGAR ESTADO EN MODO DEUDOR
   ========================== */
-  if (esModoDeudor && idURL) {
+  if (modo === "deudor" && idURL) {
     cargarEstado(idURL);
     return;
   }
@@ -84,7 +106,10 @@ $(document).ready(function () {
     if (!idDeudorActual) return;
 
     const baseURL = window.location.origin + window.location.pathname;
-    const link = `${baseURL}?id=${idDeudorActual}&modo=deudor`;
+
+    // Encriptar ID con Base64
+    const encodedId = btoa(idDeudorActual);
+    const link = `${baseURL}?id=${encodedId}&modo=deudor`;
 
     Swal.fire({
       title: "Compartir estado",
@@ -203,7 +228,8 @@ function cargarEstado(id) {
         .css("width", porcentaje + "%")
         .text(porcentaje.toFixed(1) + "%");
 
-      tablaPagos.clear();
+      // Limpiar tabla antes de agregar
+      if (tablaPagos) tablaPagos.clear();
 
       data.pagos.forEach(p => {
 
@@ -215,7 +241,7 @@ function cargarEstado(id) {
              </button>`;
 
         tablaPagos.row.add([
-          p.fecha_pago,
+          formatoFecha(p.fecha_pago),
           Number(p.monto).toFixed(2),
           acciones
         ]);
@@ -240,5 +266,5 @@ function limpiarEstado() {
   $("#saldoPendiente").text("0.00");
   $("#avance").css("width", "0%").text("0%");
 
-  tablaPagos.clear().draw();
+  if (tablaPagos) tablaPagos.clear().draw();
 }
