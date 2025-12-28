@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Estado de Cuenta</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- DataTables -->
+  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+  <!-- Select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .select2-container .select2-selection--single {
+      height: 38px;
+    }
+    .select2-selection__rendered {
+      line-height: 38px !important;
+    }
+    .select2-selection__arrow {
+      height: 38px !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MENÚ (solo admin) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="menuAdmin">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">💼 Control de Deudas</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menuPrincipal">
+      <ul class="navbar-nav ms-auto">
+
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">📋 Deudores</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="pagos.html">💵 Pagos</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link active" href="estado.html">📊 Estado</a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="container mt-4">
+
+  <h3 class="mb-4">📊 Estado de Cuenta</h3>
+
+  <!-- SELECT DE DEUDORES (solo admin) -->
+  <div class="card mb-4" id="bloqueSelect">
+    <div class="card-body">
+      <label class="form-label">Seleccione Deudor</label>
+      <select id="selectDeudor" class="form-select" style="width:100%">
+        <option value="">-- Seleccione --</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- DATOS DEL DEUDOR -->
+  <div class="card mb-4">
+    <div class="card-body">
+
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0" id="nombreDeudor">---</h5>
+
+        <button id="btnCompartir"
+                class="btn btn-outline-primary btn-sm"
+                disabled>
+          📤 Compartir estado
+        </button>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-4">
+          <div class="alert alert-primary">
+            <strong>Deuda Total</strong><br>
+            S/ <span id="deudaTotal">0.00</span>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="alert alert-success">
+            <strong>Total Pagado</strong><br>
+            S/ <span id="totalPagado">0.00</span>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="alert alert-danger">
+            <strong>Saldo Pendiente</strong><br>
+            S/ <span id="saldoPendiente">0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BARRA DE AVANCE -->
+      <div class="mt-3">
+        <label class="form-label">Avance de Pago</label>
+        <div class="progress">
+          <div id="avance"
+               class="progress-bar bg-success"
+               role="progressbar"
+               style="width: 0%">
+            0%
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TABLA DE PAGOS -->
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title mb-3">💵 Pagos Realizados</h5>
+
+      <table id="tablaPagos" class="table table-striped table-bordered">
+        <thead class="table-dark">
+          <tr>
+            <th>Fecha de Pago</th>
+            <th>Monto</th>
+            <th class="col-acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+<!-- Select2 -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<!-- JS propio -->
+<script src="assets/js/estado.js"></script>
+
+</body>
+</html>
